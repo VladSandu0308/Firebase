@@ -64,7 +64,6 @@ function addOrExtractMoney(sign) {
 
     usersRef.get().then(function(doc) {
         var newAmount = parseFloat(doc.data().accountsRefs[num].balance) + sign * amount;
-        console.log(newAmount);
 
         var accounts = doc.data().accountsRefs;
         accounts[num].balance = newAmount;
@@ -75,12 +74,25 @@ function addOrExtractMoney(sign) {
     })
 }
 
+var course = 0.48;
+
 function checkCourseOnClick() {
-    //TODO
+    //TODO use API
 }
 
 function changeMoney() {
-    // TODO
+    var num = parseFloat(document.getElementById("transfer_money_acc_num").value) - 1;
+    var newCurrency = document.getElementById("moneyType").value;
+
+    usersRef.get().then(function(doc) {
+        var accounts = doc.data().accountsRefs;
+        accounts[num].balance = accounts[num].balance * course;
+        accounts[num].type = newCurrency;
+        
+        usersRef.update({
+            accountsRefs: accounts
+        })
+    })
 }
 
 function sliderValueChange(value) {
