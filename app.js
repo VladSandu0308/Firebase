@@ -101,7 +101,7 @@ function sliderValueChange(value) {
 
 function saveBotChanges() {
     usersRef.update({
-        botEnabled: document.getElementById("enabledCheck").value,
+        botEnabled: document.getElementById("enabledCheck").checked,
         waitForApproval: document.getElementById("waitApprovalCheck").checked,
         checkInterval: document.getElementById("botCheckRate").value
     })
@@ -133,6 +133,7 @@ auth.onAuthStateChanged(user => {
                     var docData = {
                         uid: user.uid,
                         name: username,
+                        email: user.email,
                         accounts: 2,
                         accountsRefs: [
                             {
