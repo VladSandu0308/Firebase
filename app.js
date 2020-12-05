@@ -76,6 +76,14 @@ function addOrExtractMoney(sign) {
     })
 }
 
+function checkCourseOnClick() {
+    //TODO
+}
+
+function changeMoney() {
+    // TODO
+}
+
 const db = firebase.firestore();
 let usersRef;
 let unsubscribe;

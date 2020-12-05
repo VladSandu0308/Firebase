@@ -56,30 +56,58 @@
   <section id="whenSignedIn" hidden="true">
 
     <div id="userDetails"></div>
-
+    
     <button id="signOutBtn" class="btn btn-primary">Sign Out</button>
+    <hr>
+  
+    <section>
+  
+      <h2 id=openAccountsLabel>Open accounts: x</h2>
+  
+      <h3 id=acc0></h3>
+      <h3 id=acc1></h3>
+      <h3 id=acc2></h3>
+  
+      <p>
+        <input placeholder="Account number..." id="add_money_acc_num"/>
+        <input placeholder="Amount..." id="add_money_amount"/>
+        <button onclick="addMoneyOnclick()" id="addMoneyBtn" >Add money</button>
+        <button onClick="extractMoneyOnclick()" id="takeOutMoneyBtn" >Extract money</button>
+      </p>
+
+      <h2 id=openAccountsLabel>Manual Operations: </h2>
+      <p>
+        <input placeholder="Account number..." id="transfer_money_acc_num"/>
+        <label for="Money">To:</label>
+        <select name="moneyType" id="moneyType">
+          <option value="RON">RON</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="CHF">CHF</option>
+          <option value="GPB">GPB</option>
+        </select>
+        <button onclick="checkCourseOnClick()" id="checkCourseBtn" >Check course</button>
+        <input placeholder="To be generated..." id="coursePlaceHolder" readonly=1/>
+        <button onclick="changeMoney()" id="changeMoneyBtn" >Change Money</button>
+
+      </p>
+    </section>
+    <hr>
+    <section>
+      <h2 id=openAccountsLabel>Exchange Bot Settings: </h2>
+
+      <p>
+        <label>Enabled: </label>
+        <label class="switch">
+          <input type="checkbox">
+          <span class="slider round"></span>
+        </label>
+      </p>
+
+    </section>
 
   </section>
 
-  <hr>
-
-  <section>
-
-    <h2 id=openAccountsLabel>Open accounts: x</h2>
-
-    <h3 id=acc0></h3>
-    <h3 id=acc1></h3>
-    <h3 id=acc2></h3>
-
-    <p>
-      <input placeholder="Account number..." id="add_money_acc_num"/>
-      <input placeholder="Amount..." id="add_money_amount"/>
-      <button onclick="addMoneyOnclick()" id="addMoneyBtn" >Add money</button>
-      <button onClick="extractMoneyOnclick()" id="takeOutMoneyBtn" >Extract money</button>
-    </p>
-
-
-  </section>
 
 
 
