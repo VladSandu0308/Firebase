@@ -48,8 +48,25 @@ auth.onAuthStateChanged(user => {
 });
 
 
-
 // DB stuff
+
+function addAccountOnClick() {
+    var currency = document.getElementById("accountMoneyType").value;
+
+    usersRef.get().then(function(doc) {
+        var accounts = doc.data().accountsRefs;
+        accounts.push({
+            type: currency,
+            balance: 0
+        })
+        
+        usersRef.update({
+            accounts: doc.data().accounts + 1,
+            accountsRefs: accounts
+        })
+    })
+}
+
 function addMoneyOnclick() {
     addOrExtractMoney(1);
 }
@@ -74,15 +91,27 @@ function addOrExtractMoney(sign) {
     })
 }
 
-var course = 0.48;
-
 function checkCourseOnClick() {
-    //TODO use API
+    var num = parseFloat(document.getElementById("transfer_money_acc_num").value) - 1;
+    var newCurrency = document.getElementById("moneyType").value;
+    var newId = currencyToId(newCurrency);
+    var oldId;
+
+    usersRef.get().then(function(doc) {
+        var oldCurrency = doc.data().accountsRefs[num].type;
+        oldId = currencyToId(oldCurrency);
+    })
+
+    db.collection('api-info').doc('currencies').get().then(function(doc) {
+        var exch = doc.data().currencies;
+        document.getElementById("coursePlaceHolder").innerHTML = exch[oldId * currencies + newId].toFixed(4);
+    })
 }
 
 function changeMoney() {
     var num = parseFloat(document.getElementById("transfer_money_acc_num").value) - 1;
     var newCurrency = document.getElementById("moneyType").value;
+    var course = parseFloat(document.getElementById("coursePlaceHolder").innerHTML);
 
     usersRef.get().then(function(doc) {
         var accounts = doc.data().accountsRefs;
@@ -93,6 +122,14 @@ function changeMoney() {
             accountsRefs: accounts
         })
     })
+
+    // reset course placeholder
+    document.getElementById("coursePlaceHolder").innerHTML = "0.0000";
+}
+
+function moneyTypeChange() {
+    // reset course placeholder
+    document.getElementById("coursePlaceHolder").innerHTML = "0.0000";
 }
 
 function sliderValueChange(value) {
@@ -134,15 +171,11 @@ auth.onAuthStateChanged(user => {
                         uid: user.uid,
                         name: username,
                         email: user.email,
-                        accounts: 2,
+                        accounts: 1,
                         accountsRefs: [
                             {
                                 type: "RON",
-                                balance: "1000"
-                            },
-                            {
-                                type: "EUR",
-                                balance:"550"
+                                balance: "0.0000"
                             }
                         ],
                         botEnabled: true,

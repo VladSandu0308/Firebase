@@ -2,6 +2,24 @@ const getCurrency = document.getElementById('get-currency');
 const base = document.getElementById("cur");
 const accepted_currencies = ["RON", "EUR", "USD", "GBP", "CHF"];
 const symbols = ["EUR", "RON", "USD", "GBP", "CHF"];
+
+function currencyToId(cur) {
+    switch(cur) {
+        case "RON":
+            return 0;
+        case "EUR":
+            return 1;
+        case "USD":
+            return 2;
+        case "GBP":
+            return 3;
+        case "CHF":
+            return 4;
+        default:
+            return -1;
+    }
+}
+
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
@@ -35,16 +53,11 @@ setInterval(function(){
                 if (xhr[i].readyState === 4 && xhr[i].status === 200){
                     console.log('Response from request ' + i + ' [ ' + xhr[i].responseText + ']');
                     var json = JSON.parse(xhr[i].responseText);
-                    var index = 0;
                     currencyArbitrage[i][i] = 1;
                     currenciesAsList[i * currencies + i] = 1;
                     for (var rate in json.rates) {
-                        if (index == i) {
-                            index++;
-                        }
-                        currencyArbitrage[i][index] = json.rates[rate];
-                        currenciesAsList[i * currencies + index] = json.rates[rate];
-                        index++;
+                        currencyArbitrage[i][currencyToId(rate)] = json.rates[rate];
+                        currenciesAsList[i * currencies + currencyToId(rate)] = json.rates[rate];
                     }
                 }
             };
