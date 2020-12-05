@@ -82,6 +82,11 @@ function checkCourseOnClick() {
 
 function changeMoney() {
     // TODO
+    document.getElementById("myCheck").checked = true;
+}
+
+function sliderValueChange(value) {
+    document.getElementById("sliderValue").innerHTML = value;
 }
 
 const db = firebase.firestore();
@@ -120,7 +125,11 @@ auth.onAuthStateChanged(user => {
                                 type: "EUR",
                                 balance:"550"
                             }
-                        ]
+                        ],
+                        botEnabled: true,
+                        waitForApproval: false,
+                        checkInterval: 15,
+                        lastCheck: Date.now()
                     };
                     usersRef.set(docData).then(function() {
                         console.log("User successfully added!");
@@ -143,6 +152,12 @@ auth.onAuthStateChanged(user => {
                     var acc = doc.data().accountsRefs[i];
                     document.getElementById("acc" + i).innerHTML = (i + 1) + ". " + acc.type + " " + acc.balance;
                 }
+
+                // update settings
+                document.getElementById("enabledBtn").checked = doc.data().botEnabled;
+                document.getElementById("waitApprovalBtn").checked = doc.data().waitForApproval;
+                document.getElementById("botCheckRate").value = doc.data().sliderValueChange;
+
             });
 
     } else {
