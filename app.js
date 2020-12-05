@@ -1,7 +1,6 @@
 
 /// Auth stuff
 const auth = firebase.auth();
-
 const signInBtn = document.getElementById('signInBtn');
 const signOutBtn = document.getElementById('signOutBtn');
 const login = document.getElementById("loginBut");
