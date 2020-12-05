@@ -65,13 +65,19 @@
 
   <section>
 
-    <h2>My Firestore Things</h2>
+    <h2 id=openAccountsLabel>Open accounts: x</h2>
 
-    <ul id="thingsList">
+    <h3 id=acc0></h3>
+    <h3 id=acc1></h3>
+    <h3 id=acc2></h3>
 
-    </ul>
+    <p>
+      <input placeholder="Account number..." id="add_money_acc_num"/>
+      <input placeholder="Amount..." id="add_money_amount"/>
+      <button onclick="addMoneyOnclick()" id="addMoneyBtn" >Add money</button>
+      <button onClick="extractMoneyOnclick()" id="takeOutMoneyBtn" >Extract money</button>
+    </p>
 
-    <button id="createThing" class="btn btn-success">Create Random Thing</button>
 
   </section>
 
