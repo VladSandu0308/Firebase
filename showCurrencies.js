@@ -3,17 +3,13 @@ const base = document.getElementById("cur");
 const accepted_currencies = ["RON", "EUR", "USD", "GBP", "CHF"];
 const symbols = ["EUR", "RON", "USD", "GBP", "CHF"];
 const currencies = 5;
-// 0: ron_diff, 1: 1, 2: usd_diff, 3: gbp_diff...
 var currencyArbitrage = new Array(currencies);
+var currenciesAsList = new Array(currencies * currencies);
+var updateInterval = 300000;
 
 for (var i = 0; i < currencies; ++i) {
     currencyArbitrage[i] = new Array(currencies);
 }
-// var accounts
-
-// function iterate(value, index, array) {
-
-// }
 
 setInterval(function(){
     var xhr = [];
@@ -40,11 +36,13 @@ setInterval(function(){
                     var json = JSON.parse(xhr[i].responseText);
                     var index = 0;
                     currencyArbitrage[i][i] = 1;
+                    currenciesAsList[i * currencies + i] = 1;
                     for (var rate in json.rates) {
                         if (index == i) {
                             index++;
                         }
                         currencyArbitrage[i][index] = json.rates[rate];
+                        currenciesAsList[i * currencies + index] = json.rates[rate];
                         index++;
                     }
                 }
@@ -52,24 +50,21 @@ setInterval(function(){
         })(i);
 
     }
-    for (var i = 0; i < currencies; ++i) {
-        console.log("ROW " + i);
-        for (var j = 0; j < currencies; ++j) {
-            console.log(currencyArbitrage[i][j]);
-        }
-    }
-    console.log(arbitrage(currencyArbitrage));
-}, 10000);
+
+    // add to database
+    var docData = {
+        currencies: currenciesAsList,
+        lastCheck: Date.now()
+    };
+    db.collection('api-info').doc('currencies').set(docData).then(function() {
+        console.log("Data successfully added!");
+    });
+
+}, updateInterval);
 
 getCurrency.onclick = () => {
-    if(!accepted_currencies.includes(base.value)){
-        window.alert("Eroare");
-        return;
-    }
     var rates = 0;
-
     var len = symbols.length;
-    console.log(len)
 
     var Http = new XMLHttpRequest();
     var url = "https://api.exchangeratesapi.io/latest?base=" + base.value + "&symbols=";
@@ -84,12 +79,8 @@ getCurrency.onclick = () => {
         }
     }
 
-
     // for feature graph
     // var url2 = "https://api.exchangeratesapi.io/history?start_at=2018-01-01&end_at=2018-09-01&base=USD&symbols=RON";
-    console.log(base.value)
-    console.log(url)
-
     Http.open("GET", url);
     Http.send();
 
