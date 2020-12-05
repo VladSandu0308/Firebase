@@ -1,7 +1,6 @@
 const auth = firebase.auth();
 
 const signInBtn = document.getElementById('signInBtn');
-const signInBtnF = document.getElementById("signInBtnF")
 const signOutBtn = document.getElementById('signOutBtn');
 const login = document.getElementById("loginBut");
 const email = document.getElementById("email");
@@ -13,13 +12,21 @@ const userDetails = document.getElementById('userDetails');
 
 
 const provider = new firebase.auth.GoogleAuthProvider();
-const provider2 = new firebase.auth.FacebookAuthProvider();
 
 /// Sign in event handlers
-
 signInBtn.onclick = () => auth.signInWithPopup(provider);
-signInBtnF.onclick = () => auth.signInWithPopup(provider2);
-login.onclick = auth.signInWithEmailAndPassword(email.value, password.value);
+login.onclick = () => {
+    auth.signInWithEmailAndPassword(email.value, password.value)
+    .then((user) => {
+        user = email.value;
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+
+        window.alert("Error: " + errorMessage);
+    });
+}
  
 
 signOutBtn.onclick = () => auth.signOut();
