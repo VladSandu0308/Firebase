@@ -50,7 +50,6 @@ auth.onAuthStateChanged(user => {
 
 
 // DB stuff
-
 function addMoneyOnclick() {
     addOrExtractMoney(1);
 }
@@ -82,11 +81,18 @@ function checkCourseOnClick() {
 
 function changeMoney() {
     // TODO
-    document.getElementById("myCheck").checked = true;
 }
 
 function sliderValueChange(value) {
     document.getElementById("sliderValue").innerHTML = value;
+}
+
+function saveBotChanges() {
+    usersRef.update({
+        botEnabled: document.getElementById("enabledCheck").value,
+        waitForApproval: document.getElementById("waitApprovalCheck").checked,
+        checkInterval: document.getElementById("botCheckRate").value
+    })
 }
 
 const db = firebase.firestore();
@@ -154,9 +160,10 @@ auth.onAuthStateChanged(user => {
                 }
 
                 // update settings
-                document.getElementById("enabledBtn").checked = doc.data().botEnabled;
-                document.getElementById("waitApprovalBtn").checked = doc.data().waitForApproval;
-                document.getElementById("botCheckRate").value = doc.data().sliderValueChange;
+                document.getElementById("enabledCheck").checked = doc.data().botEnabled;
+                document.getElementById("waitApprovalCheck").checked = doc.data().waitForApproval;
+                document.getElementById("botCheckRate").value = doc.data().checkInterval;
+                document.getElementById("sliderValue").innerHTML = doc.data().checkInterval;
 
             });
 
