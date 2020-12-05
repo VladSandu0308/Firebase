@@ -2,15 +2,34 @@ const getCurrency = document.getElementById('get-currency');
 const base = document.getElementById("cur");
 const accepted_currencies = ["RON", "EUR", "USD", "GBP", "CHF"];
 const symbols = ["EUR", "RON", "USD", "GBP", "CHF"];
+
+function currencyToId(cur) {
+    switch(cur) {
+        case "RON":
+            return 0;
+        case "EUR":
+            return 1;
+        case "USD":
+            return 2;
+        case "GBP":
+            return 3;
+        case "CHF":
+            return 4;
+        default:
+            return -1;
+    }
+}
+
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
-var updateInterval = 300000;
+var updateIntervalMatrix = 300000;
 
 for (var i = 0; i < currencies; ++i) {
     currencyArbitrage[i] = new Array(currencies);
 }
 
+// populate currency matrix and add to database
 setInterval(function(){
     var xhr = [];
     for (var i = 0; i < currencies; ++i) {
@@ -32,18 +51,13 @@ setInterval(function(){
             xhr[i].send();
             xhr[i].onreadystatechange = function(){
                 if (xhr[i].readyState === 4 && xhr[i].status === 200){
-                    // console.log('Response from request ' + i + ' [ ' + xhr[i].responseText + ']');
+                    console.log('Response from request ' + i + ' [ ' + xhr[i].responseText + ']');
                     var json = JSON.parse(xhr[i].responseText);
-                    var index = 0;
                     currencyArbitrage[i][i] = 1;
                     currenciesAsList[i * currencies + i] = 1;
                     for (var rate in json.rates) {
-                        if (index == i) {
-                            index++;
-                        }
-                        currencyArbitrage[i][index] = json.rates[rate];
-                        currenciesAsList[i * currencies + index] = json.rates[rate];
-                        index++;
+                        currencyArbitrage[i][currencyToId(rate)] = json.rates[rate];
+                        currenciesAsList[i * currencies + currencyToId(rate)] = json.rates[rate];
                     }
                 }
             };
@@ -60,7 +74,52 @@ setInterval(function(){
         console.log("Data successfully added!");
     });
 
-}, updateInterval);
+}, updateIntervalMatrix);
+
+
+// exchange bot
+const updateIntervalExchangeBot = 5000;
+usersRef = db.collection('users');
+
+function hasExchangePossibility(data) {
+    if (Date.now() - data.lastCheck < data.checkInterval * 1000) {
+        return;
+    }
+    return true;
+}
+
+function checkPossibleExchanges(data) {
+
+}
+
+
+setInterval(function() {
+    db.collection("users").where("botEnabled", "==", true)
+    .get()
+    .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            if (hasExchangePossibility(doc.data())) {
+
+                // make check
+                checkPossibleExchanges(doc.data());
+
+                // update check info
+                db.collection('users').doc(doc.id).update({
+                    lastCheck: Date.now()
+                })
+            }
+        });
+    })
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+
+}, updateIntervalExchangeBot);
+
+
+
+
+
 
 getCurrency.onclick = () => {
     var rates = 0;
@@ -71,11 +130,11 @@ getCurrency.onclick = () => {
 
     for(var i = 0; i < len; ++i) {
         if (symbols[i] != base.value) {
-            rates++;
             url += symbols[i];
-            if (i != len - 1) {
+            if (rates < currencies - 2) {
                 url += ",";    
             }
+            rates++;
         }
     }
 

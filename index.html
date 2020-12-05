@@ -202,39 +202,54 @@
       <h3 id=acc0></h3>
       <h3 id=acc1></h3>
       <h3 id=acc2></h3>
-  
-      <h2 id=openAccountsLabel>Manual Operations: </h2>
-      <p>
-        <input placeholder="Account number..." id="add_money_acc_num"/>
-        <input placeholder="Amount..." id="add_money_amount"/>
-        <button onclick="addMoneyOnclick()" id="addMoneyBtn" >Add money</button>
-        <button onClick="extractMoneyOnclick()" id="takeOutMoneyBtn" >Extract money</button>
-      </p>
 
+      <h4>Add new account:</h4>
       <p>
-        <input placeholder="Account number..." id="transfer_money_acc_num"/>
-        <label for="Money">To:</label>
-        <select name="moneyType" id="moneyType">
+        <select name="accountMoneyType" id="accountMoneyType">
           <option value="RON">RON</option>
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
           <option value="CHF">CHF</option>
-          <option value="GPB">GPB</option>
+          <option value="GBP">GBP</option>
+        </select>
+        <button onclick="addAccountOnClick()" id="addAccountBtn" >Add account</button>
+      </p>
+  
+      <h2 id=openAccountsLabel>Manual Operations: </h2>
+      <h4>Add/Extract Money:</h4>
+      <p>
+        <input placeholder="Account number..." id="add_money_acc_num"/>
+        <input placeholder="Amount..." id="add_money_amount"/>
+        <button onclick="addMoneyOnclick()" id="addMoneyBtn" >Add money:</button>
+        <button onClick="extractMoneyOnclick()" id="takeOutMoneyBtn" >Extract money:</button>
+      </p>
+
+      <h4>Exchange Money From Account:</h4>
+      <p>
+        <input placeholder="Account number..." id="transfer_money_acc_num"/>
+        <label for="Money">To:</label>
+        <select onchange="moneyTypeChange()" name="moneyType" id="moneyType">
+          <option value="RON">RON</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="CHF">CHF</option>
+          <option value="GBP">GBP</option>
         </select>
         <button onclick="checkCourseOnClick()" id="checkCourseBtn" >Check course</button>
-        <input placeholder="To be generated..." id="coursePlaceHolder" readonly=1/>
+        <label id="coursePlaceHolder">0.0000</label>
         <button onclick="changeMoney()" id="changeMoneyBtn" >Change Money</button>
       </p>
 
+      <h4>See all exchange currencies:</h4>
       <p>
         <select name="moneyType" id="cur">
           <option value="RON">RON</option>
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
           <option value="CHF">CHF</option>
-          <option value="GPB">GPB</option>
+          <option value="GBP">GBP</option>
         </select>
-        <button id="get-currency">Get Currency</button>
+        <button id="get-currency">See currencies</button>
       </p>
 
     </section>
