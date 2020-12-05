@@ -33,6 +33,7 @@
 </script>
 
 <script src="app.js" defer></script>
+<script src="showCurrencies.js" defer></script>
 
 </head>
 
@@ -89,8 +90,19 @@
         <button onclick="checkCourseOnClick()" id="checkCourseBtn" >Check course</button>
         <input placeholder="To be generated..." id="coursePlaceHolder" readonly=1/>
         <button onclick="changeMoney()" id="changeMoneyBtn" >Change Money</button>
-
       </p>
+
+      <p>
+        <select name="moneyType" id="cur">
+          <option value="RON">RON</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="CHF">CHF</option>
+          <option value="GPB">GPB</option>
+        </select>
+        <button id="get-currency">Get Currency</button>
+      </p>
+
     </section>
     <hr>
     <section>
