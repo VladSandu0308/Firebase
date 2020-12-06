@@ -1,6 +1,11 @@
 const getCurrency = document.getElementById('get-currency');
 const base = document.getElementById("cur");
 const accepted_currencies = ["RON", "EUR", "USD", "GBP", "CHF"];
+const fluctuations = [1, 0.209086, 0.235743, 0.184622, 0.228602,
+                      4.78342, 1, 1.12761, 0.883042, 1.09312,
+                      4.24465, 0.887454, 1, 0.783428, 0.970006,
+                      5.42028, 1.13319, 1.27740, 1, 1.23885,
+                      4.37949, 0.915352, 1.03210, 0.808409, 1];
 const symbols = ["EUR", "RON", "USD", "GBP", "CHF"];
 
 function currencyToId(cur) {
@@ -40,7 +45,7 @@ function idToCurrency(id) {
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
-var day = 86400000; // 24h;
+var day = 8640000; // 24h;
 var updateIntervalMatrix = day;
 
 for (var i = 0; i < currencies; ++i) {
@@ -95,11 +100,20 @@ setInterval(function(){
         });
     })
 
+    // db.collection('api-info').doc('fluctuations').get().then(function(doc) {
+    //     var docData = {
+    //         fluctuations: fluctuations,
+    //     };
+    //     db.collection('api-info').doc('fluctuations').set(docData).then(function() {
+    //         console.log("Data successfully added!");
+    //     });
+    // })
+
 }, updateIntervalMatrix);
 
 
 // exchange bot
-const updateIntervalExchangeBot = 60000;
+const updateIntervalExchangeBot = 10000;
 usersRef = db.collection('users');
 
 function hasExchangePossibility(data) {
@@ -149,19 +163,22 @@ function checkPossibleExchanges(id, data) {
                             if (waitApproval) {
                                 waitMessages += "-you should change " + currentCurrency +  " to " + bestExchangeCurrency + " for some profit!\r\n";
                             } else {
-                                changeMoney(id, i, bestExchangeCurrency, bestExchangeRate);
-                                nonWaitMessages += "-I changed from account " + j + " " + currentCurrency +  " to " + bestExchangeCurrency + " for you to make some profit!\r\n"
+                                accounts[i].balance = accounts[i].balance * bestExchangeRate;
+                                accounts[i].type = bestExchangeCurrency;
+                                nonWaitMessages += "-I changed from account " + i + " " + currentCurrency +  " to " + bestExchangeCurrency + " for you to make some profit!\r\n"
                             }
                         }
                     }
                     if (i == accounts.length - 1) {
                         if (waitApproval) {
                             // sendEmail(data.email, "Hello " + data.name + ",\r\nHere is your daily update about your currencies:\r\n" + waitMessages + "\r\nHave a nice day,\r\nLotTrading Bot.\r\n");
+                            console.log(waitMessages);
                         } else {
                             if (nonWaitMessages == "") {
                                 // sendEmail(data.email, "Hello " + data.name + ",\r\nI wanted to inform you that everything is working good and no changes were made today!\r\nHave a nice day,\r\nLotTrading Bot.\r\n");
                             } else {
                                 // sendEmail(data.email, "Hello " + data.name + ",\r\nHere is your daily update about my changes:\r\n" + nonWaitMessages + "\nHave a nice day,\nLotTrading Bot.\n");
+                                console.log(nonWaitMessages);
                                 db.collection("users").doc(id).update({
                                     accountsRefs: accounts
                                 })
