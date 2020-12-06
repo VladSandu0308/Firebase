@@ -174,7 +174,7 @@ auth.onAuthStateChanged(user => {
                         accountsRefs: [
                             {
                                 type: "RON",
-                                balance: "0.0000"
+                                balance: 0.0000
                             }
                         ],
                         botEnabled: true,
@@ -201,7 +201,7 @@ auth.onAuthStateChanged(user => {
                 document.getElementById("openAccountsLabel").innerHTML = "Open accounts: " + accounts;
                 for (var i = 0; i < accounts; ++i) {
                     var acc = doc.data().accountsRefs[i];
-                    document.getElementById("acc" + i).innerHTML = (i + 1) + ". " + acc.type + " " + acc.balance;
+                    document.getElementById("acc" + i).innerHTML = (i + 1) + ". " + acc.type + " " + (Math.round(acc.balance * 10000) / 10000);
                 }
 
                 // update settings
