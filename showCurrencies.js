@@ -113,7 +113,7 @@ setInterval(function(){
 
 
 // exchange bot
-const updateIntervalExchangeBot = 1000000;
+const updateIntervalExchangeBot = 20000;
 usersRef = db.collection('users');
 
 function hasExchangePossibility(data) {
