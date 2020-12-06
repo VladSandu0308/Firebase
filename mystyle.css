@@ -238,7 +238,6 @@ button {
 	-moz-border-radius: 0 0 5px 5px;
 	-o-border-radius: 0 0 5px 5px;
 	-ms-border-radius: 0 0 5px 5px;
-<<<<<<< HEAD
 	border-radius: 10px 10px 10px 10px;
 	padding: 12px 0;
 	text-align: center;
@@ -270,38 +269,19 @@ button {
 /* Style the left column */
 .left {
 	grid-area: left;
+	justify-items: center;
 }
 
 /* Style the middle column */
 .middle {
 	grid-area: middle;
+	justify-items: center;
 }
 
 /* Style the right column */
 .right {
 	grid-area: right;
-=======
-	border-radius: 0 0 5px 5px;
-	border-top: 1px solid #CFD5D9;
-	padding: 15px 0;
-}
-
-button a {
-	background: url(https://cssdeck.com/uploads/media/items/8/8bcLQqF.png) 0 -112px no-repeat;
-	color: #7E7E7E;
-	font-size: 17px;
-	padding: 2px 0 2px 40px;
-	text-decoration: none;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
-}
-button a:hover {
-	background-position: 0 -135px;
-	color: #00aeef;
->>>>>>> 04aac40c7205fa6c1fa6ffac82eba3f67c274b7f
+	justify-items: center;
 }
 
 
