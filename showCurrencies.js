@@ -142,20 +142,24 @@ function checkPossibleExchanges(id, data) {
                     }
                     if (j == currencies - 1) {
                         if (currentCurrency == bestExchangeCurrency) {
-                            waitMessages += data.name + ", you should keep your " + currentCurrency + " as it is.\n";
+                            if (waitApproval) {
+                                waitMessages += data.name + ", you should keep your " + currentCurrency + " as it is.\n";
+                            }
                         } else {
-                            waitMessages += data.name + ", you should change " + currentCurrency +  " to " + bestExchangeCurrency + "!\n";
+                            if (waitApproval) {
+                                waitMessages += data.name + ", you should change " + currentCurrency +  " to " + bestExchangeCurrency + "!\n";
+                            } else {
+                                changeMoney(id, i, bestExchangeCurrency, bestExchangeRate);
+                                nonWaitMessages += data.name + ", we changed " + currentCurrency +  " to " + bestExchangeCurrency + "for you to make some profit!\n"
+                            }
                         }
                     }
                     if (i == accounts.length - 1) {
                         if (waitApproval) {
                             // TODO send mail for manual change
                         } else {
-                            // TODO make change
-                            changeMoney(id, i, bestExchangeCurrency)
                             // TODO send mail for automatic change
                         }
-                        console.log(waitMessages);
                     }
                 })
             } 
