@@ -149,7 +149,10 @@ function checkPossibleExchanges(id, data) {
                             if (waitApproval) {
                                 waitMessages += data.name + ", you should change " + currentCurrency +  " to " + bestExchangeCurrency + "!\n";
                             } else {
-                                changeMoney(id, i, bestExchangeCurrency, bestExchangeRate);
+                                // update account
+                                accounts[i].balance = accounts[i].balance * bestExchangeRate;
+                                accounts[i].type = bestExchangeCurrency;
+                                
                                 nonWaitMessages += data.name + ", we changed " + currentCurrency +  " to " + bestExchangeCurrency + "for you to make some profit!\n"
                             }
                         }
@@ -159,16 +162,15 @@ function checkPossibleExchanges(id, data) {
                             // TODO send mail for manual change
                         } else {
                             // TODO send mail for automatic change
+                            db.collection("users").doc(id).update({
+                                accountsRefs: accounts
+                            })
                         }
                     }
                 })
             } 
         }
     })
-}
-
-function changeMoney(userID, accountNum, newCurrency, course) {
-    
 }
 
 
@@ -180,7 +182,7 @@ setInterval(function() {
             if (hasExchangePossibility(doc.data())) {
 
                 // verify if can check
-                if(!checkPossibleExchanges(doc.data())) {
+                if(!hasExchangePossibility(doc.data())) {
                     return;
                 }
 
