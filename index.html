@@ -18,6 +18,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-firestore.js"></script>
+<!-- <script src="https://smtpjs.com/v3/smtp.js"></script> -->
 
 <script>
   // Your web app's Firebase configuration
@@ -268,9 +269,9 @@
       </p>
 
       <p>
-        <label>Check interval (min): </label>
-        <input type="range" min="1" max="100" value="50" class="slider" id="botCheckRate" onchange="sliderValueChange(this.value)">
-        <label id="sliderValue">50</label>
+        <label>Check interval (days): </label>
+        <input type="range" min="1" max="14" value="3" class="slider" id="botCheckRate" onchange="sliderValueChange(this.value)">
+        <label id="sliderValue">3</label>
       </p>
 
       <button onclick="saveBotChanges()" id="saveChangesBtn" >Save Changes</button>
