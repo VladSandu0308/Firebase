@@ -40,12 +40,8 @@ function idToCurrency(id) {
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
-<<<<<<< HEAD
-var updateIntervalMatrix = 86400000;
-=======
 var day = 86400000; // 24h;
 var updateIntervalMatrix = day;
->>>>>>> 04aac40c7205fa6c1fa6ffac82eba3f67c274b7f
 
 for (var i = 0; i < currencies; ++i) {
     currencyArbitrage[i] = new Array(currencies);
@@ -103,7 +99,7 @@ setInterval(function(){
 
 
 // exchange bot
-const updateIntervalExchangeBot = 10000;
+const updateIntervalExchangeBot = 60000;
 usersRef = db.collection('users');
 
 function hasExchangePossibility(data) {
@@ -147,28 +143,32 @@ function checkPossibleExchanges(id, data) {
                     if (j == currencies - 1) {
                         if (currentCurrency == bestExchangeCurrency) {
                             if (waitApproval) {
-                                waitMessages += data.name + ", you should keep your " + currentCurrency + " as it is.\n";
+                                waitMessages += "-you should keep your " + currentCurrency + " as it is.\n";
                             }
                         } else {
                             if (waitApproval) {
-                                waitMessages += data.name + ", you should change " + currentCurrency +  " to " + bestExchangeCurrency + "!\n";
+                                waitMessages += "-you should change " + currentCurrency +  " to " + bestExchangeCurrency + " for some profit!\n";
                             } else {
                                 // update account
                                 accounts[i].balance = accounts[i].balance * bestExchangeRate;
                                 accounts[i].type = bestExchangeCurrency;
                                 
-                                nonWaitMessages += data.name + ", we changed " + currentCurrency +  " to " + bestExchangeCurrency + "for you to make some profit!\n"
+                                nonWaitMessages += "-I changed " + currentCurrency +  " to " + bestExchangeCurrency + "for you to make some profit!\n"
                             }
                         }
                     }
                     if (i == accounts.length - 1) {
                         if (waitApproval) {
-                            // TODO send mail for manual change
+                            // sendEmail(data.email, "Hello " + data.name + ",\nHere is your daily update about your currencies:\n" + waitMessages + "\nHave a nice day,\nLotTrading Bot.\n");
                         } else {
-                            // TODO send mail for automatic change
-                            db.collection("users").doc(id).update({
-                                accountsRefs: accounts
-                            })
+                            if (nonWaitMessages == "") {
+                                // sendEmail(data.email, "Hello " + data.name + ",\nI wanted to inform you that everything is working good and no changes were made today!\nHave a nice day,\nLotTrading Bot.\n");
+                            } else {
+                                // sendEmail(data.email, "Hello " + data.name + ",\nHere is your daily update about my changes:\n" + nonWaitMessages + "\nHave a nice day,\nLotTrading Bot.\n");
+                                db.collection("users").doc(id).update({
+                                    accountsRefs: accounts
+                                })
+                            }
                         }
                     }
                 })
@@ -176,7 +176,6 @@ function checkPossibleExchanges(id, data) {
         }
     })
 }
-
 
 setInterval(function() {
     db.collection("users").where("botEnabled", "==", true)
@@ -208,15 +207,15 @@ setInterval(function() {
 
 
 // mail sending
-function sendEmail(email) {
+function sendEmail(email, message) {
 	Email.send({
 	    Host: "smtp.gmail.com",
 	    Username : "lotulsuperior@gmail.com",
 	    Password : "lotul2020",
 	    To : email,
 	    From : "lotulsuperior@gmail.com",
-	    Subject : "Another Test",
-	    Body : "Am facut si bune am facut si RL",
+	    Subject : "LotTrading Update",
+	    Body : message,
 	}).then(
 		message => alert("Mail sent successfully")
 	);
