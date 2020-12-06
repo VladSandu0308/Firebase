@@ -38,7 +38,7 @@ auth.onAuthStateChanged(user => {
         if (displayText == null) {
             displayText = user.email.split("@", 1);
         }
-        userDetails.innerHTML = `<h3>Hello ${displayText}!</h3> <p>User ID: ${user.uid}</p>`;
+        userDetails.innerHTML = `<h1>Hello ${displayText}!</h1>`;
     } else {
         // not signed in
         whenSignedIn.hidden = true;
@@ -218,3 +218,8 @@ auth.onAuthStateChanged(user => {
     }
     
 });
+
+function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }

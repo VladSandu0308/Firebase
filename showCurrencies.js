@@ -23,7 +23,7 @@ function currencyToId(cur) {
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
-var updateIntervalMatrix = 300000;
+var updateIntervalMatrix = 86400000;
 
 for (var i = 0; i < currencies; ++i) {
     currencyArbitrage[i] = new Array(currencies);
