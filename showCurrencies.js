@@ -143,28 +143,25 @@ function checkPossibleExchanges(id, data) {
                     if (j == currencies - 1) {
                         if (currentCurrency == bestExchangeCurrency) {
                             if (waitApproval) {
-                                waitMessages += "-you should keep your " + currentCurrency + " as it is.\n";
+                                waitMessages += "-you should keep your " + currentCurrency + " as it is.\r\n";
                             }
                         } else {
                             if (waitApproval) {
-                                waitMessages += "-you should change " + currentCurrency +  " to " + bestExchangeCurrency + " for some profit!\n";
+                                waitMessages += "-you should change " + currentCurrency +  " to " + bestExchangeCurrency + " for some profit!\r\n";
                             } else {
-                                // update account
-                                accounts[i].balance = accounts[i].balance * bestExchangeRate;
-                                accounts[i].type = bestExchangeCurrency;
-                                
-                                nonWaitMessages += "-I changed " + currentCurrency +  " to " + bestExchangeCurrency + "for you to make some profit!\n"
+                                changeMoney(id, i, bestExchangeCurrency, bestExchangeRate);
+                                nonWaitMessages += "-I changed from account " + j + " " + currentCurrency +  " to " + bestExchangeCurrency + " for you to make some profit!\r\n"
                             }
                         }
                     }
                     if (i == accounts.length - 1) {
                         if (waitApproval) {
-                            // sendEmail(data.email, "Hello " + data.name + ",\nHere is your daily update about your currencies:\n" + waitMessages + "\nHave a nice day,\nLotTrading Bot.\n");
+                            // sendEmail(data.email, "Hello " + data.name + ",\r\nHere is your daily update about your currencies:\r\n" + waitMessages + "\r\nHave a nice day,\r\nLotTrading Bot.\r\n");
                         } else {
                             if (nonWaitMessages == "") {
-                                // sendEmail(data.email, "Hello " + data.name + ",\nI wanted to inform you that everything is working good and no changes were made today!\nHave a nice day,\nLotTrading Bot.\n");
+                                // sendEmail(data.email, "Hello " + data.name + ",\r\nI wanted to inform you that everything is working good and no changes were made today!\r\nHave a nice day,\r\nLotTrading Bot.\r\n");
                             } else {
-                                // sendEmail(data.email, "Hello " + data.name + ",\nHere is your daily update about my changes:\n" + nonWaitMessages + "\nHave a nice day,\nLotTrading Bot.\n");
+                                // sendEmail(data.email, "Hello " + data.name + ",\r\nHere is your daily update about my changes:\r\n" + nonWaitMessages + "\nHave a nice day,\nLotTrading Bot.\n");
                                 db.collection("users").doc(id).update({
                                     accountsRefs: accounts
                                 })
