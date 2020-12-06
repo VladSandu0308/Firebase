@@ -1,7 +1,6 @@
 
 /// Auth stuff
 const auth = firebase.auth();
-
 const signInBtn = document.getElementById('signInBtn');
 const signOutBtn = document.getElementById('signOutBtn');
 const login = document.getElementById("loginBut");
@@ -57,7 +56,7 @@ function addAccountOnClick() {
         var accounts = doc.data().accountsRefs;
         accounts.push({
             type: currency,
-            balance: 0
+            balance: 0.0000
         })
         
         usersRef.update({
@@ -180,7 +179,7 @@ auth.onAuthStateChanged(user => {
                         ],
                         botEnabled: true,
                         waitForApproval: false,
-                        checkInterval: 15,
+                        checkInterval: 2,
                         lastCheck: Date.now()
                     };
                     usersRef.set(docData).then(function() {

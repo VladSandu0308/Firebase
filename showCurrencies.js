@@ -18,12 +18,34 @@ function currencyToId(cur) {
         default:
             return -1;
     }
-}
+};
+
+function idToCurrency(id) {
+    switch(id) {
+        case 0:
+            return "RON";
+        case 1:
+            return "EUR";
+        case 2:
+            return "USD";
+        case 3:
+            return "GBP";
+        case 4:
+            return "CHF";
+        default:
+            return -1;
+    }
+};
 
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
+<<<<<<< HEAD
 var updateIntervalMatrix = 86400000;
+=======
+var day = 86400000; // 24h;
+var updateIntervalMatrix = day;
+>>>>>>> 04aac40c7205fa6c1fa6ffac82eba3f67c274b7f
 
 for (var i = 0; i < currencies; ++i) {
     currencyArbitrage[i] = new Array(currencies);
@@ -51,7 +73,7 @@ setInterval(function(){
             xhr[i].send();
             xhr[i].onreadystatechange = function(){
                 if (xhr[i].readyState === 4 && xhr[i].status === 200){
-                    console.log('Response from request ' + i + ' [ ' + xhr[i].responseText + ']');
+                    // console.log('Response from request ' + i + ' [ ' + xhr[i].responseText + ']');
                     var json = JSON.parse(xhr[i].responseText);
                     currencyArbitrage[i][i] = 1;
                     currenciesAsList[i * currencies + i] = 1;
@@ -65,31 +87,94 @@ setInterval(function(){
 
     }
 
-    // add to database
-    var docData = {
-        currencies: currenciesAsList,
-        lastCheck: Date.now()
-    };
-    db.collection('api-info').doc('currencies').set(docData).then(function() {
-        console.log("Data successfully added!");
-    });
+    // update old currencies, add new currencies to database
+    db.collection('api-info').doc('currencies').get().then(function(doc) {
+        var curr = doc.data().currencies;
+        var docData = {
+            oldCurrencies: curr,
+            currencies: currenciesAsList,
+        };
+        db.collection('api-info').doc('currencies').set(docData).then(function() {
+            console.log("Data successfully added!");
+        });
+    })
 
 }, updateIntervalMatrix);
 
 
 // exchange bot
-const updateIntervalExchangeBot = 5000;
+const updateIntervalExchangeBot = 10000;
 usersRef = db.collection('users');
 
 function hasExchangePossibility(data) {
+    return true;
     if (Date.now() - data.lastCheck < data.checkInterval * 1000) {
-        return;
+        return false;
     }
     return true;
 }
 
-function checkPossibleExchanges(data) {
+function checkPossibleExchanges(id, data) {
+    db.collection('api-info').doc('currencies').get().then(function(doc) {
+        var old = doc.data().oldCurrencies;
+        var curr = doc.data().currencies;
+        var accounts = data.accountsRefs;
+        let waitApproval = data.waitForApproval;
+        let waitMessages = "";
+        let nonWaitMessages = "";
 
+        for(let i = 0; i < accounts.length; ++i) {
+            let currentBestScore = 0;
+            let bestExchangeRate = 1;
+            let bestExchangeCurrency = accounts[i].type;
+            let currentCurrency = accounts[i].type;
+            let score;
+            for(let j = 0; j < currencies; ++j) {
+                if (currencyToId(currentCurrency) == j) {
+                    continue;
+                }
+
+                db.collection('api-info').doc('fluctuations').get().then(function(doc1) {
+                    // more points if it is rising
+                    score = curr[currencyToId(currentCurrency) * currencies + j] - old[currencyToId(currentCurrency) * currencies + j];
+                    score += curr[currencyToId(currentCurrency) * currencies + j] - doc1.data().fluctuations[currencyToId(currentCurrency) * currencies + j];
+
+                    if (score > currentBestScore) {
+                        currentBestScore = score;
+                        bestExchangeRate = curr[currencyToId(currentCurrency) * currencies + j];
+                        bestExchangeCurrency = idToCurrency(j);
+                    }
+                    if (j == currencies - 1) {
+                        if (currentCurrency == bestExchangeCurrency) {
+                            if (waitApproval) {
+                                waitMessages += data.name + ", you should keep your " + currentCurrency + " as it is.\n";
+                            }
+                        } else {
+                            if (waitApproval) {
+                                waitMessages += data.name + ", you should change " + currentCurrency +  " to " + bestExchangeCurrency + "!\n";
+                            } else {
+                                // update account
+                                accounts[i].balance = accounts[i].balance * bestExchangeRate;
+                                accounts[i].type = bestExchangeCurrency;
+                                
+                                nonWaitMessages += data.name + ", we changed " + currentCurrency +  " to " + bestExchangeCurrency + "for you to make some profit!\n"
+                            }
+                        }
+                    }
+                    if (i == accounts.length - 1) {
+                        if (waitApproval) {
+                            // TODO send mail for manual change
+                        } else {
+                            // TODO send mail for automatic change
+                            db.collection("users").doc(id).update({
+                                accountsRefs: accounts
+                            })
+                        }
+                    }
+                })
+            } 
+        }
+    })
 }
 
 
@@ -100,8 +185,13 @@ setInterval(function() {
         querySnapshot.forEach(function(doc) {
             if (hasExchangePossibility(doc.data())) {
 
+                // verify if can check
+                if(!hasExchangePossibility(doc.data())) {
+                    return;
+                }
+
                 // make check
-                checkPossibleExchanges(doc.data());
+                checkPossibleExchanges(doc.id, doc.data());
 
                 // update check info
                 db.collection('users').doc(doc.id).update({
@@ -117,8 +207,20 @@ setInterval(function() {
 }, updateIntervalExchangeBot);
 
 
-
-
+// mail sending
+function sendEmail(email) {
+	Email.send({
+	    Host: "smtp.gmail.com",
+	    Username : "lotulsuperior@gmail.com",
+	    Password : "lotul2020",
+	    To : email,
+	    From : "lotulsuperior@gmail.com",
+	    Subject : "Another Test",
+	    Body : "Am facut si bune am facut si RL",
+	}).then(
+		message => alert("Mail sent successfully")
+	);
+}
 
 
 getCurrency.onclick = () => {
