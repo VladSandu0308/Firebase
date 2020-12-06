@@ -54,6 +54,12 @@ function addAccountOnClick() {
 
     usersRef.get().then(function(doc) {
         var accounts = doc.data().accountsRefs;
+        
+        if (accounts.length == 3) {
+            window.alert("You have reached the maximum number of accounts created");
+            return;
+        }
+
         accounts.push({
             type: currency,
             balance: 0.0000
