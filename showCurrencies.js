@@ -1,3 +1,4 @@
+// CONSTANTS
 const getCurrency = document.getElementById('get-currency');
 const base = document.getElementById("cur");
 const accepted_currencies = ["RON", "EUR", "USD", "GBP", "CHF"];
@@ -42,6 +43,8 @@ function idToCurrency(id) {
     }
 };
 
+
+// currency rates updating
 const currencies = 5;
 var currencyArbitrage = new Array(currencies);
 var currenciesAsList = new Array(currencies * currencies);
@@ -100,6 +103,7 @@ setInterval(function(){
         });
     })
 
+    // one time needed
     // db.collection('api-info').doc('fluctuations').get().then(function(doc) {
     //     var docData = {
     //         fluctuations: fluctuations,
@@ -111,11 +115,11 @@ setInterval(function(){
 
 }, updateIntervalMatrix);
 
-
 // exchange bot
 const updateIntervalExchangeBot = 20000;
 usersRef = db.collection('users');
 
+// currently deactivated for demo purposes
 function hasExchangePossibility(data) {
     return true;
     if (Date.now() - data.lastCheck < data.checkInterval * 1000) {
@@ -124,6 +128,7 @@ function hasExchangePossibility(data) {
     return true;
 }
 
+// exchange algorithm
 function checkPossibleExchanges(id, data) {
     db.collection('api-info').doc('currencies').get().then(function(doc) {
         var old = doc.data().oldCurrencies;
@@ -191,6 +196,7 @@ function checkPossibleExchanges(id, data) {
     })
 }
 
+// LotBot periodic check
 setInterval(function() {
     db.collection("users").where("botEnabled", "==", true)
     .get()
@@ -235,7 +241,7 @@ function sendEmail(email, message) {
 	);
 }
 
-
+// all currenciy rates for one currency
 getCurrency.onclick = () => {
     var rates = 0;
     var len = symbols.length;
@@ -274,6 +280,8 @@ getCurrency.onclick = () => {
     }
 }
 
+
+// arbitrage algorithm
 function neg_log(matrix) {
     for (r in matrix) {
         for (c in r) {
